@@ -1,0 +1,13 @@
+.env
+.env.aws
+.env.*
+!.env.aws.example
+
+**/.terraform/
+**/*.tfstate
+**/*.tfstate.*
+**/*.tfvars
+**/crash.log
+
+*.pem
+*.key

@@ -1,0 +1,23 @@
+services:
+  wiki:
+    image: requarks/wiki:2.5
+    restart: unless-stopped
+    ports:
+      - "80:3000"
+    environment:
+      DB_TYPE: postgres
+      DB_HOST: ${DB_HOST}
+      DB_PORT: 5432
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+
+  cache-api:
+    build:
+      context: ./services/cache-api
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5000:5000"
+    environment:
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: 6379
