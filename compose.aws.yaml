@@ -6,11 +6,15 @@ services:
       - "80:3000"
     environment:
       DB_TYPE: postgres
+      DB_SSL: "true"
+      NODE_EXTRA_CA_CERTS: /certs/rds-global-bundle.pem
       DB_HOST: ${DB_HOST}
       DB_PORT: 5432
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
+    volumes:
+      - ./rds-global-bundle.pem:/certs/rds-global-bundle.pem:ro
 
   cache-api:
     build:

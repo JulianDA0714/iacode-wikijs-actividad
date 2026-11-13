@@ -18,6 +18,13 @@ resource "aws_iam_role" "ec2" {
   }
 }
 
+
+resource "aws_iam_role_policy_attachment" "ssm" {
+  role       = aws_iam_role.ec2.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+
 data "aws_iam_policy_document" "secrets_access" {
   statement {
     sid = "ReadWikiDatabaseSecret"
@@ -45,6 +52,19 @@ resource "aws_iam_instance_profile" "ec2" {
 
 
 resource "aws_instance" "wikijs" {
+
+  depends_on = [
+    aws_iam_role_policy.secrets_access,
+    aws_iam_role_policy_attachment.ssm
+  ]
+
+  user_data = templatefile("${path.module}/scripts/user_data.sh", {
+    postgres_secret_arn = var.postgres_secret_arn
+    aws_region          = "us-east-2"
+    postgres_endpoint   = var.postgres_endpoint
+    redis_endpoint      = var.redis_endpoint
+  })
+
   ami           = var.ami_id
   instance_type = var.instance_type
 
