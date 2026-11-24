@@ -1,3 +1,4 @@
+
 name: Terraform CI/CD - WikiJS
 
 on:
@@ -8,6 +9,12 @@ on:
       - 'terraform/**'
       - '.github/workflows/terraform.yml'
   workflow_dispatch:
+    inputs:
+      apply:
+        description: 'Autorizar despliegue de infraestructura con Terraform Apply'
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -19,7 +26,7 @@ concurrency:
 
 jobs:
   terraform:
-    name: Terraform Validation and Plan
+    name: Terraform Validation, Plan and Apply
     runs-on: ubuntu-latest
 
     defaults:
@@ -52,4 +59,8 @@ jobs:
         run: terraform validate
 
       - name: Terraform Plan
-        run: terraform plan -input=false -no-color -lock-timeout=60s
+        run: terraform plan -input=false -no-color -lock-timeout=60s -out=tfplan
+
+      - name: Terraform Apply
+        if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.apply == true }}
+        run: terraform apply -input=false -no-color -lock-timeout=60s tfplan
