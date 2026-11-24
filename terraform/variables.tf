@@ -5,9 +5,9 @@ variable "aws_region" {
 }
 
 variable "aws_profile" {
-  description = "Perfil de AWS CLI"
+  description = "Perfil de AWS CLI (opcional)"
   type        = string
-  default     = "terraform-wikijs"
+  default     = null
 }
 
 variable "project_name" {
