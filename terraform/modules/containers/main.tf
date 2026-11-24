@@ -86,7 +86,12 @@ resource "aws_instance" "wikijs" {
     encrypted   = true
   }
 
+  lifecycle {
+    ignore_changes = [user_data]
+  }
+
   tags = {
-    Name = "${var.project_name}-ec2"
+    Name     = "${var.project_name}-ec2"
+    Activity = "Actividad6"
   }
 }
